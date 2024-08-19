@@ -96,7 +96,10 @@ nextY = nextY + this.height > 900 ? 900 - this.height : nextY;
 this.y = nextY;
 };
 }
-var player = new paddle (25, 350, 30, 30, "character1.png");
+if (!localStorage.getItem("character")){
+    localStorage.setItem("character","character1.png");
+}
+var player = new paddle (25, 350, 30, 30, localStorage.getItem('character'))
 var ai = new paddle (1200, 350, 30, 30, "character2.png")
 var ball = { x: 400, y: 350, radius: 10, xSpeed: getRandomNumber(4,9), ySpeed: getRandomNumber(-2,4),
 reverseX: function() {
@@ -143,6 +146,10 @@ if(ball.x < 0) {
   ball.reset();
   GOAL_SOUND.play();
   document.getElementById("blue_score").innerHTML = +document.getElementById("blue_score").innerHTML + +parseInt(1);
+}
+if (document.getElementById("red_score").innerHTML==5 && document.getElementById("blue_score").innerHTML==2){
+  FIFTY_TWO.play();
+  setTimeout(()=>{ FIFTY_TWO.pause() }, FIFTY_TWO.duration * 1000)
 }
 if(ball.y <= 0 || ball.y >= 900) {
 ball.reverseY();
