@@ -12,6 +12,9 @@
   <big><div id="blue_score" class="blue_score">0</div></big>
   <img src="bluescore.png" class="rectangle">
   <big><div id="timer" class="timer">00:00</div></big>
+  <img type="submit" src="volume_on.png" class="btn_btn-success1" id="submit_volume_onoff" onclick="volumeONOFF()"></button>
+  <img type="submit" src="music_on.png" class="btn_btn-success2" id="submit_music_onoff" onclick="musicONOFF()"></button>
+  <img type="submit" src="pause_on.png" class="btn_btn-success3" id="submit_pause_onoff" onclick="pauseONOFF()"></button>
 </div>
 </center>
 <img src="gates.jpg" width="135" height="900">
@@ -37,7 +40,10 @@ let minutes = 0;
 let hours = 0;
 let interval;
 
+var pauseState=false;
+
 function updateTime() {
+  if(!pauseState){
   seconds++;
   if (seconds === 60) {
     minutes++;
@@ -45,8 +51,12 @@ function updateTime() {
   }
   if (minutes === 52) {
     FIFTY_TWO.play();
+    setTimeout(()=>{ FIFTY_TWO.volume=0.0; }, FIFTY_TWO.duration * 1000)
   }
   timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+} else{
+  timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} (PAUSE)`;
+}
 }
 window.addEventListener('load', () => {
   interval = setInterval(updateTime, 1000); // Бро, зачем ты лазишь по нашему коду?
@@ -129,12 +139,15 @@ this.ySpeed += modification;
 }
 };
 function tick() {
+if (!pauseState){
+  draw();
+  FON_SOUND.play(); 
+}
 updateGame();
-draw()
 window.setTimeout("tick()", 1000/60);
-FON_SOUND.play(); 
 }
 function updateGame() {
+if (!pauseState){
 ball.x += ball.xSpeed;
 ball.y += ball.ySpeed;
 if(ball.x > 1280) { 
@@ -149,7 +162,7 @@ if(ball.x < 0) {
 }
 if (document.getElementById("red_score").innerHTML==5 && document.getElementById("blue_score").innerHTML==2){
   FIFTY_TWO.play();
-  setTimeout(()=>{ FIFTY_TWO.pause() }, FIFTY_TWO.duration * 1000)
+  setTimeout(()=>{ FIFTY_TWO.volume=0.0;}, FIFTY_TWO.duration * 1000)
 }
 if(ball.y <= 0 || ball.y >= 900) {
 ball.reverseY();
@@ -164,9 +177,15 @@ POP_SOUND.play();
 var speedUpValue = collidedWithPlayer ? player.speedModifier : ai.speedModifier;
 ball.modifyYSpeedBy(speedUpValue);
 }
-for(var keyCode in heldDown) {
-player.move(keyCode);
 }
+for(var keyCode in heldDown) {
+if (keyCode==80){
+  pauseState=!pauseState;
+} else if(!pauseState){
+  player.move(keyCode);
+}
+}
+if(!pauseState){
 var aiMiddle = ai.y + (ai.height / 2);
 if(aiMiddle < ball.y) {
 ai.move(40);
@@ -174,7 +193,7 @@ ai.move(40);
 if(aiMiddle > ball.y) {
 ai.move(38);
 }
-
+}
 }
 function draw() {
 ctx.fillStyle = "#41a64a";
@@ -211,6 +230,44 @@ return false;
 if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
 return false;
 }
+}
+var flag=1;
+document.querySelector('#submit_volume_onoff').onclick=function volumeONOFF(){
+  if (flag==1){
+    POP_SOUND.volume=0.0; 
+    GOAL_SOUND.volume=0.0;
+    FIFTY_TWO.volume=0.0;
+    FON_SOUND.volume=0.0;
+    document.getElementById("submit_volume_onoff").src="volume_off.png";
+    flag=2;
+  }else{
+    POP_SOUND.volume=0.3;
+    GOAL_SOUND.volume=0.1;
+    FON_SOUND.volume=0.1;
+    FIFTY_TWO.volume=0.5;
+    document.getElementById("submit_volume_onoff").src="volume_on.png";
+    flag=1;
+  }
+}
+var flag2=1;
+document.querySelector('#submit_music_onoff').onclick=function musicONOFF(){
+  if (flag2==1){
+    FON_SOUND.volume=0.0;
+    document.getElementById("submit_music_onoff").src="music_off.png";
+    flag2=2;
+  } else{
+    FON_SOUND.volume=0.1;
+    document.getElementById("submit_music_onoff").src="music_on.png";
+    flag2=1;
+  }
+}
+document.querySelector('#submit_pause_onoff').onclick=function pauseONOFF(){
+  pauseState=!pauseState
+  if (pauseState){
+    document.getElementById("submit_pause_onoff").src="pause_off.png";
+  } else{
+    document.getElementById("submit_pause_onoff").src="pause_on.png";
+  }
 }
 </script>
 
@@ -251,6 +308,31 @@ font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 32px;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
   margin-left: 113px;
+}
+.btn_btn-success1 {
+  color: white;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #ffffff;
+  background-size: cover;
+  margin-left: 113px;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.btn_btn-success2{
+  color: white;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #ffffff;
+  background-size: cover;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.btn_btn-success3{
+  color: white;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #ffffff;
+  background-size: cover;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 </style>
 </body>
