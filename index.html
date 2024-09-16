@@ -4,6 +4,7 @@
 <link rel="icon" href="newlogo.png" type="image/png">
 </head>
 <body bgcolor="41a64a" background="bggame.png">
+
 <center>
 <div class="scoreboard">
   <img src="redscore.png" class="rectangle">
@@ -21,8 +22,56 @@
 
 <canvas id="game" width="1280" height="900"></canvas>
 <center>
+
+
+<!-- Ниже чат -->
+<center>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" ></script>
+<script type="text/javascript" src="https://comet-server.ru/CometServerApi.js" ></script>
+<script type="text/javascript" src="https://comet-server.ru/doc/html_chat.js" ></script>
+<link rel="stylesheet" type="text/css" href="https://comet-server.ru/doc/html_chat.css"></link>
+
+<div id="html-chat"></div>
+<style>
+/* Здесь настроим css стили для чата*/
+.holder-html-chat{ border: 1px solid #ccc;padding:10px;background-color: #41a64a;width: 420px;
+position: fixed;
+  top: 85px;
+  left: 1510px;}
+.html-chat-history{ max-width: 380px; overflow: auto;max-height: 420px; border: 2px solid #ccc;padding: 100px;}
+.html-chat-js-name{ margin-top:10px; }
+.html-chat-js-input{ max-width: 380px;max-height: 90px;width: 380px;margin-top:20px; }
+.html-chat-js-button-holder{ margin-bottom: 1px;margin-top: 10px;}
+.html-chat-js-button-holder input{ width: 220px; background: #41a64a; border: 6px solid #ffffff; width: 250px; font-family: 'Franklin Gothic Medium'; border-radius: 100px; color:#ffffff}
+.html-chat-js-answer{ float:right; }
+.html-chat-js-answer a{ color: #41a64a;font-size: 1px; font-family: cursive;}
+.html-chat-js-answer a:hover{ color: #41a64a;font-size: 12px; font-family: 'Franklin Gothic Medium';}
+.html-chat-msg{ margin: 0px; font-size: 25px; font-family: 'Franklin Gothic Medium'; color: #ffffff;}
+</style>
+
+<script>
+
+   /**
+    * Чат работает на comet-server.ru
+    * По любым вопросам обращайтесь support@comet-server.ru или на сайт comet-server.ru
+    */
+    $(document).ready(function()
+    {
+       // Запуск api комет сервера
+       CometServer().start({dev_id: 4049 }) // Идентификатор разработчика на comet-server.ru
+
+       // Запуск чата. Передаём ему элемент в котором надо создать окно чата.
+       htmljs_Chat_Init( $("#html-chat") )
+    });
+</script>
+</center>
+<!-- Выше чат -->
+
+
 <a href="https://jorayoung.github.io/NSBallgame/"><button type="submit" class="submit-btn"><h2 style="color:White">В главное меню<h2></button></a>
 <a href="https://jorayoung.github.io/dopcontentnsball/"><button type="submit" class="submit-btn"><h2 style="color:White">Начать заново<h2></button></a>
+
+
 <center>
 <script>
 let FIFTY_TWO=new Audio('52.mp3');
@@ -92,18 +141,28 @@ return false;
 };
 this.move = function(keyCode) {
 var nextY = this.y;
-if(keyCode == 40) {
-nextY += 5;
-this.speedModifer = 1.5;
-} else if(keyCode == 38) {
-nextY += -5;
-this.speedModifier = 1.5;
+var nextX = this.x;
+if(keyCode == 83) {
+nextY += +7,0;
+  this.speedModifier = 0,7
+} else if(keyCode == 87) {
+nextY += -7,0;
+  this.speedModifier = 1,6
+} else if(keyCode == 65) {
+nextX += -8,5;
+  this.speedModifier = 0,7
+} else if(keyCode == 68) {
+nextX += +7,0;
+  this.speedModifier = 1,6
 } else {
-this.speedModifier = 0;
+  this.speedModifier = 0;
 }
 nextY = nextY < 0 ? 0 : nextY;
 nextY = nextY + this.height > 900 ? 900 - this.height : nextY;
+nextX = nextX < 0 ? 0 : nextX;
+nextX = nextX + this.width > 1280 ? 1280 - this.width : nextX;
 this.y = nextY;
+this.x = nextX
 };
 }
 if (!localStorage.getItem("character")){
@@ -111,7 +170,7 @@ if (!localStorage.getItem("character")){
 }
 var player = new paddle (25, 350, 30, 30, localStorage.getItem('character'))
 var ai = new paddle (1200, 350, 30, 30, "character2.png")
-var ball = { x: 400, y: 350, radius: 10, xSpeed: getRandomNumber(4,9), ySpeed: getRandomNumber(-2,4),
+var ball = { x: 400, y: 350, radius: 10, xSpeed: getRandomNumber(3,8), ySpeed: getRandomNumber(-5,7),
 reverseX: function() {
 this.xSpeed *= -1;
 },
@@ -186,12 +245,12 @@ if (keyCode==80){
 }
 }
 if(!pauseState){
-var aiMiddle = ai.y + (ai.height / 2);
+var aiMiddle = ai.y + (ai.height / 3);
 if(aiMiddle < ball.y) {
-ai.move(40);
+ai.move(83);
 }
 if(aiMiddle > ball.y) {
-ai.move(38);
+ai.move(87);
 }
 }
 }
@@ -230,6 +289,8 @@ return false;
 if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){
 return false;
 }
+
+
 }
 var flag=1;
 document.querySelector('#submit_volume_onoff').onclick=function volumeONOFF(){
@@ -276,9 +337,9 @@ document.querySelector('#submit_pause_onoff').onclick=function pauseONOFF(){
 <style>
 button {
 background: #41a64a;
-border: 10px solid #ffffff;
+border: 8px solid #ffffff;
 width: 500px; 
-height: 80px;
+height: 79px;
 border-radius: 100px;
 font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
