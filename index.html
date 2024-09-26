@@ -74,6 +74,7 @@ position: fixed;
 
 <center>
 <script>
+var keys = [[83, 40], [87, 38], [65, 37], [68, 39]]
 let FIFTY_TWO=new Audio('52.mp3');
 FIFTY_TWO.volume=0.5;
 function getRandomNumber(min, max) {
@@ -90,6 +91,15 @@ let hours = 0;
 let interval;
 
 var pauseState=false;
+
+function keyCodePro228Check(keyCode) {
+  for (var i of keys) {
+    if (i.indexOf(keyCode) != -1) {
+      return i[0]
+    }
+  } 
+  return keyCode
+}
 
 function updateTime() {
   if(!pauseState){
@@ -142,16 +152,16 @@ return false;
 this.move = function(keyCode) {
 var nextY = this.y;
 var nextX = this.x;
-if(keyCode == 83) {
+if(keyCode == 83) { // вниз
 nextY += +7,0;
   this.speedModifier = 0,7
-} else if(keyCode == 87) {
+} else if(keyCode == 87) { // вверх
 nextY += -7,0;
   this.speedModifier = 1,6
-} else if(keyCode == 65) {
+} else if(keyCode == 65) { // влево
 nextX += -8,5;
   this.speedModifier = 0,7
-} else if(keyCode == 68) {
+} else if(keyCode == 68) { // вправо
 nextX += +7,0;
   this.speedModifier = 1,6
 } else {
@@ -271,9 +281,11 @@ ctx.fillStyle = "white";
 ctx.fill();
 }
 var heldDown = {}; 
-window.addEventListener("keydown", function(keyInfo) { heldDown[event.keyCode] = true; }, false);window.addEventListener("keyup", function(keyInfo) { delete heldDown[event.keyCode]; }, false);
+window.addEventListener("keydown", function(keyInfo) { heldDown[keyCodePro228Check(event.keyCode)] = true; }, false);window.addEventListener("keyup", function(keyInfo) { delete heldDown[keyCodePro228Check(event.keyCode)]; }, false);
 tick(); // Чесдес съеби отсюда нахуй уеба, не играйся с нашим кодом и читы не делай ишачина
 document.onkeydown = function(e) {
+event.keyCode = keyCodePro228Check(event.keyCode)
+console.log(event.keyCode)
 if(event.keyCode == 123) {
 return false;
 }
