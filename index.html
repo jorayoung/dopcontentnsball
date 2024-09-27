@@ -68,8 +68,8 @@ position: fixed;
 <!-- Выше чат -->
 
 
-<a href="https://jorayoung.github.io/NSBallgame/"><button type="submit" class="submit-btn"><h2 style="color:White">В главное меню<h2></button></a>
-<a href="https://jorayoung.github.io/dopcontentnsball/"><button type="submit" class="submit-btn"><h2 style="color:White">Начать заново<h2></button></a>
+<a href="PLAY - hub.html"><button type="submit" class="submit-btn"><h2 style="color:White">В главное меню<h2></button></a>
+<a href="NSBall.html"><button type="submit" class="submit-btn"><h2 style="color:White">Начать заново<h2></button></a>
 
 
 <center>
@@ -248,7 +248,7 @@ ball.modifyYSpeedBy(speedUpValue);
 }
 }
 for(var keyCode in heldDown) {
-if (keyCode==80){
+if (keyCode==undefined){
   pauseState=!pauseState;
 } else if(!pauseState){
   player.move(keyCode);
